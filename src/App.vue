@@ -15,6 +15,18 @@
 
     <section class="section">
       <div class="container">
+        <form class="field is-grouped">
+          <p class="control is-expanded">
+            <input class="input" type="text" placeholder="ToDo title">
+          </p>
+
+          <p class="control">
+            <button type="submit" class="button is-info">
+              Add
+            </button>
+          </p>
+        </form>
+
         <article class="media has-background-light" style="padding: 15px">
           <div class="media-left">
             <label class="checkbox">
