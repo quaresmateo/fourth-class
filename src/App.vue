@@ -69,13 +69,22 @@
         </article>
       </div>
     </section>
+
+    <notifications group="all" />
   </div>
 </template>
 
 <script>
 export default {
   name: 'App',
-  components: {
+
+  mounted () {
+    this.$notify({
+      group: 'all',
+      type: 'info',
+      title: 'Hello there!',
+      text: 'Welcome to our application!'
+    })
   }
 }
 </script>
