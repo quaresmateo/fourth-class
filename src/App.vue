@@ -16,6 +16,26 @@
     <section class="section">
       <div class="container">
         <form class="field is-grouped">
+          <div class="field has-addons" style="margin-right: 10px">
+            <p class="control">
+              <button class="button is-primary">
+                <span>All</span>
+              </button>
+            </p>
+
+            <p class="control">
+              <button class="button">
+                <span>Active</span>
+              </button>
+            </p>
+
+            <p class="control">
+              <button class="button">
+                <span>Done</span>
+              </button>
+            </p>
+          </div>
+
           <p class="control is-expanded">
             <input class="input" type="text" placeholder="ToDo title">
           </p>
