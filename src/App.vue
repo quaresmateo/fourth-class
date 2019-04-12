@@ -81,7 +81,10 @@
           </div>
 
           <div class="media-right">
-            <button class="delete"></button>
+            <button
+              @click="deleteTodo(todo)"
+              class="delete"
+            ></button>
           </div>
         </article>
       </div>
@@ -166,6 +169,21 @@ export default {
             type: 'error',
             title: 'Request failed!',
             text: 'Failed to save a ToDo!'
+          })
+        })
+    },
+
+    deleteTodo (todo) {
+      axios.delete(`https://jsonplaceholder.typicode.com/todos/${todo.id}`)
+        .then(res => {
+          this.todos = this.todos.filter(otherTodo => otherTodo.id !== todo.id)
+        })
+        .catch(err => {
+          this.$notify({
+            group: 'all',
+            type: 'error',
+            title: 'Request failed!',
+            text: 'Failed to delete a ToDo!'
           })
         })
     }
