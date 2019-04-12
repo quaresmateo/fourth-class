@@ -18,19 +18,31 @@
         <form class="field is-grouped">
           <div class="field has-addons" style="margin-right: 10px">
             <p class="control">
-              <button class="button is-primary">
+              <button
+                class="button"
+                :class="{ 'is-primary': filter === 'all' }"
+                @click="setFilter('all')"
+              >
                 <span>All</span>
               </button>
             </p>
 
             <p class="control">
-              <button class="button">
+              <button
+                class="button"
+                :class="{ 'is-primary': filter === 'active' }"
+                @click="setFilter('active')"
+              >
                 <span>Active</span>
               </button>
             </p>
 
             <p class="control">
-              <button class="button">
+              <button
+                class="button"
+                :class="{ 'is-primary': filter === 'done' }"
+                @click="setFilter('done')"
+              >
                 <span>Done</span>
               </button>
             </p>
@@ -48,7 +60,7 @@
         </form>
 
         <article
-          v-for="(todo, key) in todos"
+          v-for="(todo, key) in filteredTodos"
           :key="key"
           class="media has-background-light"
           style="padding: 15px"
@@ -86,8 +98,22 @@ export default {
   name: 'App',
 
   data: () => ({
-    todos: []
+    todos: [],
+    filter: 'all'
   }),
+
+  computed: {
+    filteredTodos () {
+      if (this.filter === 'all') {
+        return this.todos
+      }
+
+      return this.todos
+        .filter(todo => {
+          return this.filter === 'done' ? todo.completed : !todo.completed
+        })
+    }
+  },
 
   created () {
     axios.get('https://jsonplaceholder.typicode.com/todos')
@@ -111,6 +137,12 @@ export default {
       title: 'Hello there!',
       text: 'Welcome to our application!'
     })
+  },
+
+  methods: {
+    setFilter (type) {
+      this.filter = type
+    }
   }
 }
 </script>
