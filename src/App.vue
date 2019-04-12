@@ -67,7 +67,11 @@
         >
           <div class="media-left">
             <label class="checkbox">
-              <input type="checkbox" v-model="todo.completed">
+              <input
+                type="checkbox"
+                v-model="todo.completed"
+                @click="updateTodo(todo)"
+              >
             </label>
           </div>
 
@@ -169,6 +173,22 @@ export default {
             type: 'error',
             title: 'Request failed!',
             text: 'Failed to save a ToDo!'
+          })
+        })
+    },
+
+    updateTodo (todo) {
+      axios.put(`https://jsonplaceholder.typicode.com/todos/${todo.id}`, todo)
+        .then(res => {
+          const index = this.todos.indexOf(todo)
+          this.todos[index] = res.data
+        })
+        .catch(err => {
+          this.$notify({
+            group: 'all',
+            type: 'error',
+            title: 'Request failed!',
+            text: 'Failed to update a ToDo!'
           })
         })
     },
