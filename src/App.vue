@@ -47,18 +47,23 @@
           </p>
         </form>
 
-        <article class="media has-background-light" style="padding: 15px">
+        <article
+          v-for="(todo, key) in todos"
+          :key="key"
+          class="media has-background-light"
+          style="padding: 15px"
+        >
           <div class="media-left">
             <label class="checkbox">
-              <input type="checkbox">
+              <input type="checkbox" v-model="todo.completed">
             </label>
           </div>
 
           <div class="media-content">
             <div class="content">
               <p>
-                <strong>#1</strong>
-                deletus at autem
+                <strong>#{{ todo.id }}</strong>
+                {{ todo.title }}
               </p>
             </div>
           </div>
@@ -75,8 +80,29 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'App',
+
+  data: () => ({
+    todos: []
+  }),
+
+  created () {
+    axios.get('https://jsonplaceholder.typicode.com/todos')
+      .then(res => {
+        this.todos = res.data
+      })
+      .catch(err => {
+        this.$notify({
+          group: 'all',
+          type: 'error',
+          title: 'Request failed!',
+          text: 'Failed to load os ToDos!'
+        })
+      })
+  },
 
   mounted () {
     this.$notify({
