@@ -15,7 +15,7 @@
 
     <section class="section">
       <div class="container">
-        <form class="field is-grouped">
+        <form class="field is-grouped" @submit.prevent="addTodo()">
           <div class="field has-addons" style="margin-right: 10px">
             <p class="control">
               <button
@@ -49,7 +49,7 @@
           </div>
 
           <p class="control is-expanded">
-            <input class="input" type="text" placeholder="ToDo title">
+            <input class="input" type="text" placeholder="ToDo title" v-model="newTitle">
           </p>
 
           <p class="control">
@@ -99,7 +99,8 @@ export default {
 
   data: () => ({
     todos: [],
-    filter: 'all'
+    filter: 'all',
+    newTitle: ''
   }),
 
   computed: {
@@ -142,6 +143,31 @@ export default {
   methods: {
     setFilter (type) {
       this.filter = type
+    },
+
+    addTodo () {
+      if (!this.newTitle) {
+        return
+      }
+
+      const newTodo = {
+        title: this.newTitle,
+        completed: false
+      }
+
+      axios.post('https://jsonplaceholder.typicode.com/todos', newTodo)
+        .then(res => {
+          this.todos.unshift(res.data)
+          this.newTitle = ''
+        })
+        .catch(err => {
+          this.$notify({
+            group: 'all',
+            type: 'error',
+            title: 'Request failed!',
+            text: 'Failed to save a ToDo!'
+          })
+        })
     }
   }
 }
