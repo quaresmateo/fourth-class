@@ -12,22 +12,27 @@
           <p class="panel-heading">Posts</p>
           <div class="panel-block">
             <p class="control has-icons-left">
-              <input class="input is-small" type="text" placeholder="search">
+              <input
+                class="input is-small"
+                type="text"
+                placeholder="search title..."
+                v-model="search"
+              >
               <span class="icon is-small is-left">
                 <i class="fas fa-search" aria-hidden="true"></i>
               </span>
             </p>
           </div>
 
-          <a v-for="post in posts" class="panel-block">
-            <h2>{{post.title}}</h2>
+          <a v-for="post in filteredList" :key="post" class="panel-block">
             <social-sharing
+              url="https://vuejs.org/"
               :title="post.title.toUpperCase()+'\n '+post.body"
               :description="post.body"
               quote="Vue is a progressive framework for building user interfaces."
-              hashtags="vuejs,javascript,axios,learn"
+              hashtags="vuejs,javascript,axios"
               twitter-user="vuejs"
-              
+              inline-template
             >
               <div>
                 <network network="twitter">
@@ -41,11 +46,10 @@
                 </network>
               </div>
             </social-sharing>
+            <h2>{{post.title}}</h2>
           </a>
         </nav>
       </div>
-
-      <br>
     </section>
   </div>
 </template>
@@ -57,7 +61,8 @@ export default {
   name: "App",
 
   data: () => ({
-    posts: []
+    posts: [],
+    search: ""
   }),
 
   created() {
@@ -78,7 +83,13 @@ export default {
 
   mounted() {},
 
-  computed: {},
+  computed: {
+    filteredList() {
+      return this.posts.filter(post => {
+        return post.title.toLowerCase().includes(this.search.toLowerCase())
+      })
+    }
+  },
   methods: {}
 };
 </script>
