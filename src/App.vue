@@ -1,214 +1,86 @@
 <template>
   <div id="app">
-    <section class="hero is-primary">
-      <div class="hero-body">
-        <div class="container">
-          <h1 class="title">
-            LABES Training
-          </h1>
-          <h2 class="subtitle">
-            ToDo App
-          </h2>
-        </div>
-      </div>
-    </section>
-
     <section class="section">
       <div class="container">
-        <form class="field is-grouped" @submit.prevent="addTodo()">
-          <div class="field has-addons" style="margin-right: 10px">
-            <p class="control">
-              <button
-                class="button"
-                :class="{ 'is-primary': filter === 'all' }"
-                @click="setFilter('all')"
-              >
-                <span>All</span>
-              </button>
-            </p>
+        <h1 class="title">Posts</h1>
+        <h2 class="subtitle">
+          Post
+          <strong>sections</strong>, like the one you're currently reading
+        </h2>
 
-            <p class="control">
-              <button
-                class="button"
-                :class="{ 'is-primary': filter === 'active' }"
-                @click="setFilter('active')"
-              >
-                <span>Active</span>
-              </button>
-            </p>
-
-            <p class="control">
-              <button
-                class="button"
-                :class="{ 'is-primary': filter === 'done' }"
-                @click="setFilter('done')"
-              >
-                <span>Done</span>
-              </button>
+        <nav class="panel">
+          <p class="panel-heading">Posts</p>
+          <div class="panel-block">
+            <p class="control has-icons-left">
+              <input class="input is-small" type="text" placeholder="search">
+              <span class="icon is-small is-left">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </span>
             </p>
           </div>
 
-          <p class="control is-expanded">
-            <input class="input" type="text" placeholder="ToDo title" v-model="newTitle">
-          </p>
-
-          <p class="control">
-            <button type="submit" class="button is-info">
-              Add
-            </button>
-          </p>
-        </form>
-
-        <article
-          v-for="(todo, key) in filteredTodos"
-          :key="key"
-          class="media has-background-light"
-          style="padding: 15px"
-        >
-          <div class="media-left">
-            <label class="checkbox">
-              <input
-                type="checkbox"
-                v-model="todo.completed"
-                @click="updateTodo(todo)"
-              >
-            </label>
-          </div>
-
-          <div class="media-content">
-            <div class="content">
-              <p>
-                <strong>#{{ todo.id }}</strong>
-                {{ todo.title }}
-              </p>
-            </div>
-          </div>
-
-          <div class="media-right">
-            <button
-              @click="deleteTodo(todo)"
-              class="delete"
-            ></button>
-          </div>
-        </article>
+          <a v-for="post in posts" class="panel-block">
+            <h2>{{post.title}}</h2>
+            <social-sharing
+              :title="post.title.toUpperCase()+'\n '+post.body"
+              :description="post.body"
+              quote="Vue is a progressive framework for building user interfaces."
+              hashtags="vuejs,javascript,axios,learn"
+              twitter-user="vuejs"
+              
+            >
+              <div>
+                <network network="twitter">
+                  <svg style="width:24px;height:24px;float:right;" viewBox="0 0 24 24">
+                    <path
+                      fill="#000000"
+                      Elements
+                      d="M14,4V8C7,9 4,14 3,19C5.5,15.5 9,13.9 14,13.9V18L21,11L14,4M16,8.83L18.17,11L16,13.17V11.9H14C11.93,11.9 10.07,12.28 8.34,12.85C9.74,11.46 11.54,10.37 14.28,10L16,9.73V8.83Z"
+                    ></path>
+                  </svg>
+                </network>
+              </div>
+            </social-sharing>
+          </a>
+        </nav>
       </div>
-    </section>
 
-    <notifications group="all" />
+      <br>
+    </section>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 
 export default {
-  name: 'App',
+  name: "App",
 
   data: () => ({
-    todos: [],
-    filter: 'all',
-    newTitle: ''
+    posts: []
   }),
 
-  computed: {
-    filteredTodos () {
-      if (this.filter === 'all') {
-        return this.todos
-      }
-
-      return this.todos
-        .filter(todo => {
-          return this.filter === 'done' ? todo.completed : !todo.completed
-        })
-    }
-  },
-
-  created () {
-    axios.get('https://jsonplaceholder.typicode.com/todos')
+  created() {
+    axios
+      .get("https://jsonplaceholder.typicode.com/posts")
       .then(res => {
-        this.todos = res.data
+        this.posts = res.data;
       })
       .catch(err => {
         this.$notify({
-          group: 'all',
-          type: 'error',
-          title: 'Request failed!',
-          text: 'Failed to load os ToDos!'
-        })
-      })
+          group: "all",
+          type: "error",
+          title: "Request failed",
+          text: err
+        });
+      });
   },
 
-  mounted () {
-    this.$notify({
-      group: 'all',
-      type: 'info',
-      title: 'Hello there!',
-      text: 'Welcome to our application!'
-    })
-  },
+  mounted() {},
 
-  methods: {
-    setFilter (type) {
-      this.filter = type
-    },
-
-    addTodo () {
-      if (!this.newTitle) {
-        return
-      }
-
-      const newTodo = {
-        title: this.newTitle,
-        completed: false
-      }
-
-      axios.post('https://jsonplaceholder.typicode.com/todos', newTodo)
-        .then(res => {
-          this.todos.unshift(res.data)
-          this.newTitle = ''
-        })
-        .catch(err => {
-          this.$notify({
-            group: 'all',
-            type: 'error',
-            title: 'Request failed!',
-            text: 'Failed to save a ToDo!'
-          })
-        })
-    },
-
-    updateTodo (todo) {
-      axios.put(`https://jsonplaceholder.typicode.com/todos/${todo.id}`, todo)
-        .then(res => {
-          const index = this.todos.indexOf(todo)
-          this.todos[index] = res.data
-        })
-        .catch(err => {
-          this.$notify({
-            group: 'all',
-            type: 'error',
-            title: 'Request failed!',
-            text: 'Failed to update a ToDo!'
-          })
-        })
-    },
-
-    deleteTodo (todo) {
-      axios.delete(`https://jsonplaceholder.typicode.com/todos/${todo.id}`)
-        .then(res => {
-          this.todos = this.todos.filter(otherTodo => otherTodo.id !== todo.id)
-        })
-        .catch(err => {
-          this.$notify({
-            group: 'all',
-            type: 'error',
-            title: 'Request failed!',
-            text: 'Failed to delete a ToDo!'
-          })
-        })
-    }
-  }
-}
+  computed: {},
+  methods: {}
+};
 </script>
 
 <style>
